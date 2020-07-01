@@ -1,0 +1,57 @@
+---
+manufacturer:
+  european:
+    bmw:
+      - model: R1250
+        cylinders: 2
+        displacement: 1254 cc
+        hp: 136 bhp
+        torque: 105 lb-ft
+        curb weight: 479 lbs
+        variants:
+          - base
+          - Adventure
+    ktm:
+      - model: 390 Adventure
+        cylinders: 1
+        displacement: 373 cc
+        hp: 43 bhp
+        torque: 27 lb-ft
+        curb weight: 379 lbs
+      - model: 790 Adventure
+        cylinders: 2
+        displacement: 799 cc
+        hp: 95 bhp
+        torque: 65 lb-ft
+        curb weight: 417 lbs
+        variants:
+          - base
+          - R
+          - Rally
+  japanese:
+    honda:
+      - model: Africa Twin
+        cylinders: 2
+        displacement: 1084 cc
+        hp: 101 bhp
+        torque: 77 lb-ft
+        curb weight: 501 lbs
+        variants:
+          - base
+          - DCT
+          - Adventure Sports ES
+          - Adventure Sports ES DCT
+    yamaha:
+      - model: Super Tenere ES
+        cylinders: 4
+        displacement: 1199 cc
+        hp: 110 bhp
+        torque: 86 lb-ft
+        curb weight: 584 lbs
+      - model: Super Tenere 700
+        cylinders: 2
+        displacement: 689 cc
+        hp: 75 bhp
+        torque: 50 lb-ft
+        curb weight: 452 lbs
+
