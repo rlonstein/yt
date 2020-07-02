@@ -36,7 +36,7 @@ var rootCmd = &cobra.Command{
 	Use:   "yt",
 	Short: "yt, a YAML Tool",
 	Long: `yt, YAML Tool, a quick hack for extracting data using JSONPath`,
-	Args: cobra.ExactArgs(2),
+	Args: cobra.RangeArgs(1,2),
 	Run: yt,
 }
 
@@ -45,12 +45,24 @@ func yt(cmd *cobra.Command, args []string) {
 	if Verbose {
 		log.SetLevel(log.DebugLevel)
 	}
-	fn := args[0]
-	jp := args[1]
-	log.Debug("Will read from '", fn, "'...")
-	data, err := ioutil.ReadFile(fn)
-	if err != nil {
-		log.Fatal("Read failed: ", err)
+	var jp string
+	var data []byte
+	var err error
+	if len(args) == 1 {
+		jp = args[0]
+		log.Debug("Will read from stdin...")
+		data, err = ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			log.Fatal("Read from stdin failed: ", err)
+		}
+	} else {
+		jp = args[1]
+		fn := args[0]
+		log.Debug("Will read from '", fn, "'...")
+		data, err = ioutil.ReadFile(fn)
+		if err != nil {
+			log.Fatal("Read failed: ", err)
+		}
 	}
 	log.Debug("Read ", len(data), " bytes")
 	var doc yaml.Node
@@ -89,11 +101,15 @@ func Execute() {
 func init() {
 	rootCmd.SetUsageFunc(func(cmd *cobra.Command) error {
 		fmt.Println(`Usage:
-    yt [-v] <path/to/yaml/doc> <JSONPATH expression>
+    yt [-v] [<path/to/yaml/doc>] <JSONPATH expression>
 
 Options:
   -v       verbose, enable debug messages
   -h       help
+
+Examples:
+  $ yt foo.yml '$.bar'
+  $ yt '$.bar' < foo.yml | yt '*.baz'
 
 Additional reference:
   https://goessner.net/articles/JsonPath/
@@ -107,7 +123,15 @@ Additional reference:
 func encode(a *yaml.Node) (string, error) {
 	var buf bytes.Buffer
 	e := yaml.NewEncoder(&buf)
-	defer e.Close()
+
+	defer func() {
+		// can't do anything about it, but possible
+		err := e.Close()
+		if err != nil {
+			log.Info("Error closing encoder: ", err)
+		}
+	}()
+	
 	e.SetIndent(2)
 
 	if err := e.Encode(a); err != nil {
